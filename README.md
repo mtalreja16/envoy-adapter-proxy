@@ -43,10 +43,10 @@ When you finish the installation, you will have deployed  2 proxies to Apigee, c
 
 
 
-* remote-token 
-* remote-service
+* [remote-token ](https://github.com/mtalreja16/envoy-adapter-proxy/tree/main/remote-token)
+* [remote-service](https://github.com/mtalreja16/envoy-adapter-proxy/tree/main/remote-service)
 
-Now that the installation is complete, lets go over the steps needed for our use case
+Now that the installation is complete, lets go over the steps needed for our use case :
 
 **Step 1)**
 
@@ -55,6 +55,9 @@ Modify the **remote-token** proxy - > under the **ObtainAccessToken** flow
 
 
 * First add the **AccessEntity**  policy to retrieve the App OR Developer
+
+    [https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Access-Developer-Info.xml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Access-Developer-Info.xml)
+
 
     ```
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -75,6 +78,9 @@ Modify the **remote-token** proxy - > under the **ObtainAccessToken** flow
 
 * `"Access-Developer-Info"` will return XML output, the  desirable state is turn this into JSON type, for that we will use XMLtoJSON Policy like below:
 
+    [https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Developers-to-JSON.xml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Developers-to-JSON.xml)
+
+
     ```
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <XMLToJSON async="false" continueOnError="true" enabled="true" name="Developers-to-JSON">
@@ -92,7 +98,7 @@ Modify the **remote-token** proxy - > under the **ObtainAccessToken** flow
     ```
 
 
-* Since returned Json will not be in ideal format and will bring some extra attributes, we are going to clean this up using javascript process step, which will be like this:
+* Since returned Json will not be in ideal format and will bring some extra attributes, we are going to clean this up using javascript process step, which will be like this:	[https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/resources/jsc/set-jwt-variables.js](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/resources/jsc/set-jwt-variables.js)
 
     ```
     var developerattributes = context.getVariable("developerattributes");
@@ -111,6 +117,9 @@ Modify the **remote-token** proxy - > under the **ObtainAccessToken** flow
 
 
 * Now we have a developerattributes as a **outputvariable**, we can use this variable to “**Generate Access Token” **policy set the claims:
+
+    [https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Generate-Access-Token.xml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/remote-token/policies/Generate-Access-Token.xml)
+
 
     ```
        <AdditionalClaims>
@@ -137,7 +146,7 @@ In step 1, we made modifications to remote-token proxy, next step is to get thos
 * Let's  make a call remote-token service with client_id and client_secret to generate the JWT Token, here is what command will look like
 
     ```
-    curl https://api-dev.thetaintegration.com/remote-token/token -d '{"client_id":"your_client_id","client_secret":"your_client_secret","grant_type":"client_credentials"}' -H "Content-type: application/json"
+    curl https://domain.net/remote-token/token -d '{"client_id":"your_client_id","client_secret":"your_client_secret","grant_type":"client_credentials"}' -H "Content-type: application/json"
     ```
 
 
@@ -170,7 +179,7 @@ In step 1, we made modifications to remote-token proxy, next step is to get thos
 
 **Step 3)**
 
-Now let's set up our Envoy config and envoy adapter config, so our attribute can be injected in when actual call made to backend
+Now let's set up our Envoy config and envoy adapter config, so our attribute can be injected in when actual call made to backend:
 
 
 
@@ -179,6 +188,9 @@ Now let's set up our Envoy config and envoy adapter config, so our attribute can
 * add new filter (see below)  `envoy.filters.http.lua` 
 
         In code below We are writing Lua filter as **inline_code** and it will be treated as a Global script. Envoy will execute this Global script for every http request, will inspect jwt payload, loop through all the properties and extract “app_attributes” and , “dev_attributes” properties and inject them as a custom header to http request which will be then passed to backend.
+
+
+        [https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml)
 
 
     ```
@@ -215,7 +227,7 @@ Now let's set up our Envoy config and envoy adapter config, so our attribute can
     ```
 
 
-* Update apigee-adapter-service-cli/config.yaml and set auth section with  `jwt_provider_key: jwt_payload`
+* Update apigee-adapter-service-cli/config.yaml and set auth section with  `jwt_provider_key: jwt_payload`	[https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/apigee-remote-service-cli/config.yaml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/apigee-remote-service-cli/config.yaml)
 
     ```
      config.yaml: |
@@ -270,3 +282,5 @@ Finally, when you make a call to your backend with JWT Token you got from step 2
      }
     }
 ```
+
+You can find the full source code of proxy and envoy and envoy-adapter config [here](https://github.com/mtalreja16/envoy-adapter-proxy)
