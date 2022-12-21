@@ -57,34 +57,22 @@ context.setVariable("jti", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/
     return v.toString(16);
 }));
 
-var appattributes = context.getVariable("appattributes");
-var jsonArray = [];
-if(appattributes !== null){
-	var obj = JSON.parse(appattributes).Attributes.Attribute;
-	if(obj !== null)
-        obj.forEach(x => {
-          var newObject = {};
-          if(x.Name != 'DisplayName'){
-          newObject[x.Name] = x.Value;
-          jsonArray.push(newObject);
-          }
-        });
-context.setVariable("appattributes", JSON.stringify(jsonArray));
-}
 
+var appAttributes=JSON.parse(context.getVariable("appattributes"));
+var appatt = {};
+appAttributes.Attributes.Attribute.forEach(element => {
+    if(element.Name != 'DisplayName')
+        appatt[element.Name] = element.Value;
+});
 
-var developerattributes = context.getVariable("developerattributes");
-var jsonArray = [];
-if(developerattributes !== null){
-	var obj = JSON.parse(developerattributes).Attributes.Attribute;
-	if(obj !== null)
-        obj.forEach(x => {
-          var newObject = {};
-          newObject[x.Name] = x.Value;
-          jsonArray.push(newObject);
-        });
-context.setVariable("developerattributes", JSON.stringify(jsonArray));
-}
+context.setVariable("appattributes", JSON.stringify(appatt));
+
+var devAttributes=JSON.parse(context.getVariable("developerattributes"));
+var devatt = {};
+devAttributes.Attributes.Attribute.forEach(element => {
+    devatt[element.Name] = element.Value;
+});
+context.setVariable("developerattributes", JSON.stringify(devatt));
 
 
 // fetch the key and kid from the propertyset if secret does not exist

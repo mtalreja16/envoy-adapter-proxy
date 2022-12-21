@@ -1,8 +1,8 @@
-<APIProxy revision="19" name="remote-token">
+<APIProxy revision="28" name="remote-token">
     <DisplayName>remote-token</DisplayName>
     <Description>Apigee Adapter for Envoy OAuth Sample</Description>
-    <CreatedAt>1671482186794</CreatedAt>
-    <LastModifiedAt>1671483130236</LastModifiedAt>
+    <CreatedAt>1671654981613</CreatedAt>
+    <LastModifiedAt>1671654981613</LastModifiedAt>
     <BasePaths>/remote-token</BasePaths>
     <Policies>
         <Policy>Access-App-Info</Policy>
