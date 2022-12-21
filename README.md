@@ -185,12 +185,8 @@ Now let's set up our Envoy config and envoy adapter config, so our attribute can
 
 * Open /samples/envoy-config.yaml and
 * add `payload_in_metadata: jwt_payload`
-* add new filter (see below)  `envoy.filters.http.lua` 
-
-        In code below We are writing Lua filter as **inline_code** and it will be treated as a Global script. Envoy will execute this Global script for every http request, will inspect jwt payload, loop through all the properties and extract “app_attributes” and , “dev_attributes” properties and inject them as a custom header to http request which will be then passed to backend.
-
-
-        [https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml)
+* add new filter `envoy.filters.http.lua` : We are writing Lua filter as **inline_code** and it will be treated as a Global script. Envoy will execute this Global script for every http request, will inspect jwt payload, loop through all the properties and extract “app_attributes” and , “dev_attributes” properties and inject them as a custom header to http request which will be then passed to backend. 
+[https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml](https://github.com/mtalreja16/envoy-adapter-proxy/blob/main/configs/samples/envoy-config.yaml)
 
 
     ```
