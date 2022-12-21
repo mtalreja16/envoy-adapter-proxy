@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<FlowCallout continueOnError="false" enabled="true" name="Flow-Callout-1">
+    <DisplayName>Flow Callout-1</DisplayName>
+    <FaultRules/>
+    <Properties/>
+    <SharedFlowBundle>cors-v2</SharedFlowBundle>
+</FlowCallout>
