@@ -1,5 +1,5 @@
 
-** apigee-envoy-adapter-samples **
+# apigee-envoy-adapter-samples 
 
 This is repo contains the samples and customization related to Apigee Envoy adapter
 
