@@ -2,7 +2,7 @@
 
 <!-- Yay, no errors, warnings, or alerts! -->
 
-*Purpose of this article**
+**Purpose of this article**
 
 This article shows how to use Envoy filters within the Apigee Adapter for Envoy to inject custom headers based on the custom key/value pair(s) associated with Apigee’s **Developer** and **App** Entities.
 
